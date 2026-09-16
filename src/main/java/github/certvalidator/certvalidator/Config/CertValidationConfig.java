@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertPathValidator;
 import java.security.cert.PKIXParameters;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +18,8 @@ public class CertValidationConfig {
 
     @Value("${keys.default.cacerts.password}")
     private String defaultCAcertsPassword;
+    @Value("${cert.path.validation.algorithm}")
+    private String pathValidationAlgorithm;
     
     @Bean 
     public PKIXParameters buildParams() throws Exception {
@@ -50,5 +54,12 @@ public class CertValidationConfig {
         params.setRevocationEnabled(!"false".equalsIgnoreCase(System.getenv("APP_REVOCATION_ENABLED")));
 
         return params;
+    }
+
+    @Bean
+    public CertPathValidator certPathValidator() throws NoSuchAlgorithmException {
+         CertPathValidator certPathValidator = CertPathValidator.getInstance(pathValidationAlgorithm);
+
+         return certPathValidator;
     }
 }
