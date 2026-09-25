@@ -77,8 +77,8 @@ public class CertValidationService {
         // EKU and KU validation (we use here the OID to validate if the key is can be used for client validation which technically named id-kp-clientAuth)
         boolean[] ku = leafCert.getKeyUsage();
 
-        if (!ku[0]) {
-            throw new CertificateException("The certificate properities not appliacle for this application");
+        if (ku != null && !ku[0]) {
+            throw new InvalidCertificateException("Invalid Certificate: KEY_USAGE_NO_DIGITAL_SIGNATURE");
         }
         
         List<String> eku = leafCert.getExtendedKeyUsage();
