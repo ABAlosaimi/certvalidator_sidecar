@@ -11,6 +11,8 @@ import java.security.cert.CertPathValidator;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.PKIXParameters;
+import java.util.List;
+
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -30,6 +32,8 @@ public class CertValidationConfig {
     private String keyManagerPw;
     @Value("${keys.default.keymanager.container.format}")
     private String keyManagerKeyStoreInstanceFormat;
+    @Value("${cert.san.allow}")
+    private List<String> sanAllowList;
 
     String tsPath = System.getenv("APP_TRUSTSTORE_PATH");
     String tsPassword = System.getenv("APP_TRUSTSTORE_PASSWORD");
@@ -100,6 +104,12 @@ public class CertValidationConfig {
 
         return keyManagers;
     }
-    // The SSL (TLS) Context and engine end (javax) 
+    // The SSL (TLS) Context and engine end (javax)
 
+    // SANs allow list config start
+    @Bean
+    public List<String> sanAllow() {
+        return this.sanAllowList;
+    }
+    // SANs allow list config end
 }
