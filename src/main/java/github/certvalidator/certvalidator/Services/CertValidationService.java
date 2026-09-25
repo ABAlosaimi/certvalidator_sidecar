@@ -73,7 +73,14 @@ public class CertValidationService {
             throw new CertificateException("The cert do not have SAN");
         }
 
-        // EKU validation (we use here the OID to validate if the key is can be used for client validation which technically named id-kp-clientAuth)
+        
+        // EKU and KU validation (we use here the OID to validate if the key is can be used for client validation which technically named id-kp-clientAuth)
+        boolean[] ku = leafCert.getKeyUsage();
+
+        if (!ku[0]) {
+            throw new CertificateException("The certificate properities not appliacle for this application");
+        }
+        
         List<String> eku = leafCert.getExtendedKeyUsage();
 
         boolean clientAuth = eku != null && eku.contains("1.3.6.1.5.5.7.3.2"); // id-kp-clientAuth 
